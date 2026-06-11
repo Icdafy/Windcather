@@ -1,0 +1,85 @@
+{
+  "name": "windcatcher",
+  "productName": "捕风司",
+  "version": "0.1.0",
+  "description": "捕风司 · 低空经济与商业航天热点情报站（聚合信源 + AI 精选，本地运行）",
+  "author": "捕风司",
+  "license": "MIT",
+  "homepage": "https://github.com/YOUR_GITHUB_USERNAME/windcatcher",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_GITHUB_USERNAME/windcatcher.git"
+  },
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "server": "node server/index.js",
+    "pipeline": "node scripts/run-pipeline.js",
+    "icon": "python build/make-icon.py",
+    "dist": "electron-builder --win --publish never",
+    "release": "electron-builder --win --publish always"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "electron-updater": "^6.8.9",
+    "iconv-lite": "^0.6.3",
+    "node-cron": "^3.0.3",
+    "rss-parser": "^3.13.0"
+  },
+  "devDependencies": {
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.2"
+  },
+  "build": {
+    "appId": "com.windcatcher.app",
+    "productName": "捕风司",
+    "copyright": "Copyright © 2026 捕风司",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "**/*",
+      "!**/*.md",
+      "!data/**",
+      "!dist/**",
+      "!.github/**",
+      "!.claude/**",
+      "!scripts/**",
+      "!**/.gitignore",
+      "!**/*.map"
+    ],
+    "asarUnpack": [
+      "renderer/**",
+      "config/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "Windcatcher-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "捕风司",
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "YOUR_GITHUB_USERNAME",
+        "repo": "windcatcher"
+      }
+    ]
+  }
+}

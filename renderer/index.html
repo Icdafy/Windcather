@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#04060e">
+<title>捕风司 · 低空经济与商业航天情报站</title>
+<script>
+// 主题需在样式应用前就位，避免闪烁（默认深空夜航）
+(function () {
+  var t = localStorage.getItem('wc-theme') || 'dark';
+  document.documentElement.dataset.theme = t;
+  document.documentElement.style.colorScheme = (t === 'dark') ? 'dark' : 'light';
+})();
+</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- 氛围层：宣纸暖光 / 深空极光 -->
+<div class="atmosphere" aria-hidden="true">
+  <div class="aurora aurora-a"></div>
+  <div class="aurora aurora-b"></div>
+  <div class="aurora aurora-c"></div>
+  <div class="stars"></div>
+  <div class="grain"></div>
+</div>
+
+<!-- 塔台状态栏 -->
+<header class="tower">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-opacity=".25" stroke-width="1.5"/>
+      <circle cx="24" cy="24" r="13" stroke="currentColor" stroke-opacity=".4" stroke-width="1.5"/>
+      <path class="radar-sweep" d="M24 24 L24 4 A20 20 0 0 1 40.5 14.5 Z" fill="url(#sweepGrad)"/>
+      <circle cx="24" cy="24" r="2.5" fill="currentColor"/>
+      <circle class="blip blip-1" cx="33" cy="13" r="1.8" fill="#d96f1e"/>
+      <circle class="blip blip-2" cx="12" cy="31" r="1.5" fill="currentColor"/>
+      <defs>
+        <linearGradient id="sweepGrad" x1="24" y1="4" x2="40" y2="24">
+          <stop stop-color="currentColor" stop-opacity=".55"/>
+          <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="brand-text">
+      <h1>捕风司</h1>
+      <p>低空经济 × 商业航天 · 情报塔台</p>
+    </div>
+  </div>
+
+  <div class="tower-stats" id="towerStats">
+    <div class="stat"><span class="stat-num" id="statSources">–</span><span class="stat-label">监控信源</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num" id="statToday">–</span><span class="stat-label">今日捕获</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num accent" id="statFeatured">–</span><span class="stat-label">今日精选</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num" id="statStatus"><span class="pulse-dot"></span></span><span class="stat-label" id="statStatusLabel">待命</span></div>
+  </div>
+
+  <div class="tower-actions">
+    <button class="update-pill" id="updatePill" hidden></button>
+    <div class="searchbox">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.6"/><path d="M13.5 13.5 L17.5 17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input id="searchInput" type="search" placeholder="检索情报库…" aria-label="检索情报库" autocomplete="off">
+    </div>
+    <button class="rt-toggle active" id="btnRealtime" title="实时更新：自动捕捉新情报并跟上评分" aria-pressed="true">
+      <span class="rt-dot" aria-hidden="true"></span>实时
+    </button>
+    <button class="btn-icon" id="btnTheme" title="切换浅色 / 深色主题" aria-label="切换浅色或深色主题">
+      <svg class="icon-sun" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.5v2M10 16.5v2M18.5 10h-2M3.5 10h-2M16 4l-1.4 1.4M5.4 14.6 4 16M16 16l-1.4-1.4M5.4 5.4 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <svg class="icon-moon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17 11.5A7.5 7.5 0 0 1 8.5 3 7.5 7.5 0 1 0 17 11.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="btn-icon" id="btnRefresh" title="立即采集分析" aria-label="立即采集分析">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6M16.5 2.5v3.4h-3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- 导航 -->
+<nav class="nav glass" aria-label="主导航">
+  <div class="nav-tabs" role="tablist">
+    <button class="tab active" data-view="featured" role="tab" aria-selected="true">精选</button>
+    <button class="tab" data-view="hot" role="tab" aria-selected="false">热点</button>
+    <button class="tab" data-view="all" role="tab" aria-selected="false">全部动态</button>
+    <button class="tab" data-view="daily" role="tab" aria-selected="false">情报日报</button>
+    <button class="tab" data-view="sources" role="tab" aria-selected="false">信源</button>
+    <button class="tab" data-view="settings" role="tab" aria-selected="false">设置</button>
+  </div>
+  <div class="nav-filters" id="feedFilters">
+    <div class="domain-pills" role="group" aria-label="领域筛选">
+      <button class="pill active" data-domain="">全部</button>
+      <button class="pill pill-la" data-domain="lowaltitude">低空经济</button>
+      <button class="pill pill-ae" data-domain="aerospace">商业航天</button>
+    </div>
+    <div class="cat-chips" id="catChips" role="group" aria-label="分类筛选"></div>
+  </div>
+</nav>
+
+<!-- 主内容 -->
+<main id="main">
+  <section id="viewFeed" class="view">
+    <div class="feed-banner" id="feedBanner" hidden></div>
+    <button class="new-flash" id="newFlash" hidden></button>
+    <div class="feed-layout">
+      <div>
+        <div id="feedList" class="feed-list" aria-live="polite"></div>
+        <div class="feed-foot">
+          <button class="btn-ghost" id="btnMore" hidden>加载更多</button>
+          <div class="feed-end" id="feedEnd" hidden>— 风已捕尽 —</div>
+        </div>
+      </div>
+      <aside class="hot-rail glass" id="hotRail" aria-label="当前热点">
+        <div class="hot-rail-title">
+          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1C8 1 3 5.5 3 9.5a5 5 0 0 0 10 0c0-1.8-1-3.5-2-4.7C10.6 6.6 10 7.5 9 7.5 9.6 5.5 8 1 8 1z"/></svg>
+          当前热点
+        </div>
+        <div class="hot-rail-sub">多信源热度 · 随时间消退</div>
+        <div id="hotRailList"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="viewDaily" class="view" hidden>
+    <div class="daily-head glass">
+      <button class="btn-icon" id="dailyPrev" aria-label="前一天"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 4 L6.5 10 L12.5 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="daily-title">
+        <h2 id="dailyDate">–</h2>
+        <p id="dailySub">每天 08:05 自动生成 · 覆盖前 24 小时精选</p>
+      </div>
+      <button class="btn-icon" id="dailyNext" aria-label="后一天"><svg viewBox="0 0 20 20" fill="none"><path d="M7.5 4 L13.5 10 L7.5 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="btn-ghost" id="dailyRegen">重新生成</button>
+    </div>
+    <div id="dailyBody"></div>
+  </section>
+
+  <section id="viewSources" class="view" hidden>
+    <div class="src-head">
+      <h2 class="view-title">信源监控台</h2>
+      <button class="btn-primary" id="btnAddSource">+ 提报信源</button>
+    </div>
+    <div id="sourcesList" class="src-list"></div>
+  </section>
+
+  <section id="viewSettings" class="view" hidden>
+    <h2 class="view-title">设置</h2>
+    <div class="settings-grid">
+      <div class="glass card-pad">
+        <h3>AI 分析引擎 <span class="muted">DeepSeek / OpenAI 兼容协议</span></h3>
+        <label class="field"><span>API Key</span>
+          <input id="setApiKey" type="password" placeholder="sk-…（留空则使用关键词启发式降级模式）" autocomplete="off">
+        </label>
+        <label class="field"><span>接口地址</span>
+          <input id="setBaseUrl" type="text" placeholder="https://api.deepseek.com">
+        </label>
+        <div class="field-row">
+          <label class="field"><span>预筛模型（便宜）</span>
+            <input id="setPrefilterModel" type="text" placeholder="deepseek-v4-flash">
+          </label>
+          <label class="field"><span>评分模型（强）</span>
+            <input id="setScoringModel" type="text" placeholder="deepseek-v4-pro">
+          </label>
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" id="btnSaveAi">保存</button>
+          <button class="btn-ghost" id="btnTestAi">测试连接</button>
+          <span id="aiTestResult" class="test-result" role="status"></span>
+        </div>
+        <p class="hint">两段式管线：便宜模型批量预筛相关性 → 强模型只打五维分 → 最终质量分由本地公式计算（config/scoring.json 可调权重与阈值）。V4 系列已自动关闭思考模式以省钱提速。</p>
+      </div>
+      <div class="glass card-pad">
+        <h3>采集调度</h3>
+        <label class="field"><span>采集间隔（分钟）</span>
+          <input id="setInterval" type="number" min="10" max="720" step="5">
+        </label>
+        <label class="field"><span>RSSHub 实例地址 <span class="muted">选填</span></span>
+          <input id="setRsshub" type="text" placeholder="https://rsshub.app（填后 rsshub:// 型信源生效）">
+        </label>
+        <div class="btn-row"><button class="btn-primary" id="btnSaveCollect">保存</button></div>
+        <p class="hint">日报每天 08:05 自动生成。信源等级 T1（官方一手）/T1.5（官方社媒）/T2（媒体聚合）影响计分权重。填入 RSSHub 地址后，可把公众号 / 媒体经 RSSHub 转成 RSS 接入（信源页提报 <code>rsshub://路由</code> 即可）。</p>
+        <h3 style="margin-top:24px">反馈</h3>
+        <label class="field"><span>问题或建议</span>
+          <textarea id="feedbackText" rows="3" placeholder="记录在本地 data 库中，便于后续整理"></textarea>
+        </label>
+        <div class="btn-row"><button class="btn-ghost" id="btnFeedback">提交反馈</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 信源弹窗 -->
+<dialog id="srcDialog" class="glass-dialog">
+  <form method="dialog" id="srcForm">
+    <h3 id="srcDialogTitle">提报信源</h3>
+    <label class="field"><span>名称</span><input name="name" required placeholder="如：航天爱好者网"></label>
+    <label class="field"><span>类型</span>
+      <select name="type">
+        <option value="rss">RSS / Atom 订阅</option>
+        <option value="api">公开 API（eastmoney://关键词）</option>
+        <option value="html">网页爬虫（官方新闻列表页）</option>
+        <option value="bing">必应资讯 RSS</option>
+      </select>
+    </label>
+    <label class="field"><span>地址</span><input name="url" required placeholder="https://… 或 eastmoney://关键词"></label>
+    <div class="field-row">
+      <label class="field"><span>等级</span>
+        <select name="tier"><option>T2</option><option>T1.5</option><option>T1</option></select>
+      </label>
+      <label class="field"><span>领域</span>
+        <select name="domain">
+          <option value="both">双领域</option>
+          <option value="lowaltitude">低空经济</option>
+          <option value="aerospace">商业航天</option>
+        </select>
+      </label>
+    </div>
+    <label class="field"><span>备注</span><input name="note" placeholder="选填"></label>
+    <div class="btn-row">
+      <button class="btn-primary" value="ok">保存</button>
+      <button class="btn-ghost" value="cancel" formnovalidate>取消</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

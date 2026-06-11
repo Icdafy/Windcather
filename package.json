@@ -5,10 +5,10 @@
   "description": "捕风司 · 低空经济与商业航天热点情报站（聚合信源 + AI 精选，本地运行）",
   "author": "捕风司",
   "license": "MIT",
-  "homepage": "https://github.com/YOUR_GITHUB_USERNAME/windcatcher",
+  "homepage": "https://github.com/Icdafy/Windcather",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_GITHUB_USERNAME/windcatcher.git"
+    "url": "https://github.com/Icdafy/Windcather.git"
   },
   "main": "electron/main.js",
   "scripts": {
@@ -77,8 +77,8 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "YOUR_GITHUB_USERNAME",
-        "repo": "windcatcher"
+        "owner": "Icdafy",
+        "repo": "Windcather"
       }
     ]
   }

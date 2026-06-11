@@ -4,11 +4,9 @@
 
 ## 一次性准备
 
-1. 在 GitHub 建一个仓库（如 `windcatcher`），把代码推上去。
-2. 把以下两处的 `YOUR_GITHUB_USERNAME` 改成你的 GitHub 用户名：
-   - `package.json` → `build.publish.owner` 与 `repository.url`、`homepage`
-   - `README.md` 里的下载链接
-3. 确认 `.gitignore` 已排除 `data/`（**你的 DeepSeek Key 在里面，绝不能入库**）与 `dist/`。
+1. 仓库已就绪：[`Icdafy/Windcather`](https://github.com/Icdafy/Windcather)。`package.json`（`build.publish` / `repository` / `homepage`）与 `README.md` 下载链接均已指向该仓库，无需再改。
+2. 确认 `.gitignore` 已排除 `data/`（**你的 DeepSeek Key 在里面，绝不能入库**）、`dist/`、`.claude/`。
+3. （可选）以后若把仓库改名或换账号，记得同步改 `package.json` 的 `build.publish.owner/repo` 与 URL，否则自动更新会指错地址。
 
 ## 方式 A：GitHub Actions 自动发布（推荐，无需本地构建）
 

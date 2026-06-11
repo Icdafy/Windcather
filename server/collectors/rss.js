@@ -1,0 +1,87 @@
+'use strict';
+// RSS 适配器（标准 RSS / Atom / 必应资讯 RSS / RSSHub 通用）
+const Parser = require('rss-parser');
+const { fetchText } = require('./fetch-util');
+
+const parser = new Parser({
+  customFields: {
+    item: [
+      ['description', 'description'],
+      ['media:content', 'mediaContent', { keepArray: true }],
+      ['media:thumbnail', 'mediaThumbnail'],
+      ['enclosure', 'enclosure']
+    ]
+  }
+});
+
+// rsshub://<route> → 用设置里的 RSSHub 实例地址拼成完整 URL
+function resolveUrl(url, settings) {
+  if (url.startsWith('rsshub://')) {
+    const base = (settings.collect.rsshubBase || '').replace(/\/$/, '');
+    if (!base) throw new Error('未配置 RSSHub 地址（设置页填写后启用）');
+    return base + '/' + url.slice('rsshub://'.length).replace(/^\//, '');
+  }
+  return url;
+}
+
+async function fetch(source, settings) {
+  const xml = await fetchText(resolveUrl(source.url, settings), settings);
+  const feed = await parser.parseString(xml);
+  return (feed.items || []).map(it => ({
+    title: cleanText(it.title),
+    url: normalizeUrl(it.link),
+    summary: cleanText(it.contentSnippet || it.description || it.content || ''),
+    publishedAt: toIso(it.isoDate || it.pubDate),
+    image: extractImage(it)
+  }));
+}
+
+// 依次尝试：media:content / media:thumbnail / enclosure / 正文首个 <img>
+function extractImage(it) {
+  const fromMedia = arr => {
+    if (!arr) return null;
+    const list = Array.isArray(arr) ? arr : [arr];
+    for (const m of list) {
+      const u = m?.$?.url || m?.url;
+      if (u && /^https?:\/\//.test(u) && /\.(jpe?g|png|webp|gif|avif)/i.test(u)) return u;
+      if (u && m?.$?.medium === 'image') return u;
+    }
+    return null;
+  };
+  let img = fromMedia(it.mediaContent) || fromMedia(it.mediaThumbnail);
+  if (!img && it.enclosure?.url && /image/i.test(it.enclosure.type || '')) img = it.enclosure.url;
+  if (!img) {
+    const html = it['content:encoded'] || it.content || it.description || '';
+    const m = String(html).match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (m && /^https?:\/\//.test(m[1])) img = m[1];
+  }
+  return img || null;
+}
+
+function cleanText(s) {
+  return String(s || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/\s+/g, ' ').trim();
+}
+
+function toIso(d) {
+  if (!d) return null;
+  const t = new Date(d);
+  return isNaN(t) ? null : t.toISOString();
+}
+
+// 必应资讯的链接带跳转包装，解出真实地址
+function normalizeUrl(link) {
+  if (!link) return null;
+  try {
+    const u = new URL(link);
+    if (u.hostname.includes('bing.com') && u.searchParams.get('url')) {
+      return decodeURIComponent(u.searchParams.get('url'));
+    }
+    return link;
+  } catch { return link; }
+}
+
+module.exports = { fetch };

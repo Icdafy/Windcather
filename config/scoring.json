@@ -1,0 +1,30 @@
+{
+  "_说明": "计分公式参数 —— 学习 AIHOT 的思路：模型只给五维分，最终质量分由这里的公式权重用代码算出来，随时可调，秒级生效",
+  "dimensionWeights": {
+    "importance": 0.32,
+    "novelty": 0.18,
+    "credibility": 0.16,
+    "impact": 0.22,
+    "timeliness": 0.12
+  },
+  "tierMultiplier": {
+    "T1": 1.15,
+    "T1.5": 1.0,
+    "T2": 0.85
+  },
+  "featuredThresholds": {
+    "_说明": "各分类精选门槛分（0-100）。学习 AIHOT「保护用户注意力」：精选率控制在 ~14%（相关项）。官方政策/发射门槛略低（一手信息值得看），二手观点门槛高。调高=更精，调低=更多",
+    "政策法规": 69,
+    "发射与任务": 71,
+    "企业动态": 70,
+    "技术研发": 70,
+    "资本市场": 70,
+    "应用场景": 70,
+    "观点报告": 75,
+    "default": 70
+  },
+  "heatDecayHalfLifeHours": 36,
+  "clusterSimilarityThreshold": 0.42,
+  "clusterWindowHours": 72,
+  "heuristicThresholdDiscount": 0.85
+}

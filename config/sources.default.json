@@ -1,0 +1,116 @@
+{
+  "_说明": "信源种子库 —— 首次启动全量导入；之后按 _version 幂等增量补新源（url 唯一，不覆盖用户改动、不复活已删项）。分级学习 AIHOT：T1=官方一手，T1.5=官方社媒/次级渠道，T2=媒体/KOL/聚合检索。type: rss=标准RSS/Atom（支持 rsshub://路由，需在设置填 RSSHub 地址；谷歌新闻 news.google.com/rss/search 也是标准RSS） | api=公开JSON(东方财富关键词 eastmoney://关键词) | html=网页爬虫(配selector) | bing=必应资讯RSS(大陆常空)。intl:true 标记国外情报源（领域不限中国）。enabled:false 默认停用，在『信源』页一键启用。",
+  "_version": 4,
+  "sources": [
+    {
+      "name": "中国民用航空局·民航要闻",
+      "type": "html",
+      "url": "https://www.caac.gov.cn/XWZX/MHYW/",
+      "tier": "T1",
+      "domain": "lowaltitude",
+      "selector": { "list": ".list li a, ul li a", "datePattern": "\\d{4}-\\d{2}-\\d{2}" },
+      "note": "民航局官方新闻，低空空域/通航/无人机政策一手信源"
+    },
+    {
+      "name": "国家航天局·新闻",
+      "type": "html",
+      "url": "https://www.cnsa.gov.cn/n6758823/n6758838/index.html",
+      "tier": "T1",
+      "domain": "aerospace",
+      "selector": { "list": "ul li a, .list li a", "datePattern": "\\d{4}-\\d{2}-\\d{2}" },
+      "note": "国家航天局官方发布"
+    },
+    {
+      "name": "工信部·新闻动态",
+      "type": "html",
+      "url": "https://www.miit.gov.cn/xwdt/gxdt/sjdt/index.html",
+      "tier": "T1",
+      "domain": "both",
+      "selector": { "list": "ul li a, .list li a", "datePattern": "\\d{4}-\\d{2}-\\d{2}" },
+      "note": "低空经济产业政策主管部门之一"
+    },
+    {
+      "name": "中国航天科技集团·新闻",
+      "type": "html",
+      "url": "http://www.spacechina.com/n25/n144/n206/index.html",
+      "tier": "T1",
+      "domain": "aerospace",
+      "selector": { "list": "ul li a, .list li a", "datePattern": "\\d{4}-\\d{2}-\\d{2}" },
+      "note": "航天科技集团（CASC）官网新闻"
+    },
+    {
+      "name": "中国航天科工集团·新闻",
+      "type": "html",
+      "url": "http://www.casic.com.cn/n12377419/n12378013/index.html",
+      "tier": "T1",
+      "domain": "aerospace",
+      "selector": { "list": "ul li a, .list li a", "datePattern": "\\d{4}-\\d{2}-\\d{2}" },
+      "note": "航天科工集团（CASIC）官网新闻；采集失败可在信源页停用"
+    },
+    {
+      "name": "中国民航网·通航无人机",
+      "type": "html",
+      "url": "http://www.caacnews.com.cn/1/6/",
+      "tier": "T1.5",
+      "domain": "lowaltitude",
+      "selector": { "list": "ul li a, .list li a, .article-list a", "datePattern": "\\d{4}-\\d{2}-\\d{2}" },
+      "note": "中国民航报旗下，通用航空/无人机栏目；失败可停用"
+    },
+
+    { "name": "东财搜索·低空经济", "type": "api", "url": "eastmoney://低空经济", "tier": "T2", "domain": "lowaltitude", "note": "关键词聚合检索（东方财富全网新闻，按时间）" },
+    { "name": "东财搜索·eVTOL", "type": "api", "url": "eastmoney://eVTOL", "tier": "T2", "domain": "lowaltitude", "note": "电动垂直起降飞行器" },
+    { "name": "东财搜索·飞行汽车", "type": "api", "url": "eastmoney://飞行汽车", "tier": "T2", "domain": "lowaltitude", "note": "飞行汽车" },
+    { "name": "东财搜索·无人机物流", "type": "api", "url": "eastmoney://无人机物流", "tier": "T2", "domain": "lowaltitude", "note": "无人机物流配送" },
+    { "name": "东财搜索·低空空域", "type": "api", "url": "eastmoney://低空空域", "tier": "T2", "domain": "lowaltitude", "note": "低空空域改革/管理" },
+    { "name": "东财搜索·通用航空", "type": "api", "url": "eastmoney://通用航空", "tier": "T2", "domain": "lowaltitude", "note": "通用航空产业" },
+    { "name": "东财搜索·城市空中交通", "type": "api", "url": "eastmoney://城市空中交通", "tier": "T2", "domain": "lowaltitude", "note": "UAM / 城市空中交通" },
+    { "name": "东财搜索·通航机场", "type": "api", "url": "eastmoney://通用机场", "tier": "T2", "domain": "lowaltitude", "note": "通用机场基建" },
+    { "name": "东财搜索·亿航智能", "type": "api", "url": "eastmoney://亿航智能", "tier": "T2", "domain": "lowaltitude", "note": "低空龙头企业 EHang" },
+    { "name": "东财搜索·小鹏汇天", "type": "api", "url": "eastmoney://小鹏汇天", "tier": "T2", "domain": "lowaltitude", "note": "飞行汽车" },
+    { "name": "东财搜索·峰飞航空", "type": "api", "url": "eastmoney://峰飞航空", "tier": "T2", "domain": "lowaltitude", "note": "eVTOL 整机" },
+    { "name": "东财搜索·沃飞长空", "type": "api", "url": "eastmoney://沃飞长空", "tier": "T2", "domain": "lowaltitude", "note": "吉利系 eVTOL" },
+    { "name": "东财搜索·时的科技", "type": "api", "url": "eastmoney://时的科技", "tier": "T2", "domain": "lowaltitude", "note": "eVTOL（TCab）" },
+    { "name": "东财搜索·沃兰特", "type": "api", "url": "eastmoney://沃兰特", "tier": "T2", "domain": "lowaltitude", "note": "eVTOL（VOLANT）" },
+    { "name": "东财搜索·御风未来", "type": "api", "url": "eastmoney://御风未来", "tier": "T2", "domain": "lowaltitude", "note": "eVTOL" },
+
+    { "name": "东财搜索·商业航天", "type": "api", "url": "eastmoney://商业航天", "tier": "T2", "domain": "aerospace", "note": "商业航天总览" },
+    { "name": "东财搜索·可回收火箭", "type": "api", "url": "eastmoney://可回收火箭", "tier": "T2", "domain": "aerospace", "note": "可回收/复用火箭" },
+    { "name": "东财搜索·卫星互联网", "type": "api", "url": "eastmoney://卫星互联网", "tier": "T2", "domain": "aerospace", "note": "卫星互联网/星座" },
+    { "name": "东财搜索·火箭发射", "type": "api", "url": "eastmoney://火箭发射", "tier": "T2", "domain": "aerospace", "note": "运载火箭发射任务" },
+    { "name": "东财搜索·千帆星座", "type": "api", "url": "eastmoney://千帆星座", "tier": "T2", "domain": "aerospace", "note": "上海垣信 G60 千帆星座" },
+    { "name": "东财搜索·国网星座", "type": "api", "url": "eastmoney://星网", "tier": "T2", "domain": "aerospace", "note": "中国星网 GW 星座" },
+    { "name": "东财搜索·蓝箭航天", "type": "api", "url": "eastmoney://蓝箭航天", "tier": "T2", "domain": "aerospace", "note": "朱雀系列火箭" },
+    { "name": "东财搜索·星河动力", "type": "api", "url": "eastmoney://星河动力", "tier": "T2", "domain": "aerospace", "note": "谷神星/智神星火箭" },
+    { "name": "东财搜索·天兵科技", "type": "api", "url": "eastmoney://天兵科技", "tier": "T2", "domain": "aerospace", "note": "天龙系列火箭" },
+    { "name": "东财搜索·星际荣耀", "type": "api", "url": "eastmoney://星际荣耀", "tier": "T2", "domain": "aerospace", "note": "双曲线系列火箭" },
+    { "name": "东财搜索·中科宇航", "type": "api", "url": "eastmoney://中科宇航", "tier": "T2", "domain": "aerospace", "note": "力箭系列火箭" },
+    { "name": "东财搜索·东方空间", "type": "api", "url": "eastmoney://东方空间", "tier": "T2", "domain": "aerospace", "note": "引力系列火箭" },
+    { "name": "东财搜索·银河航天", "type": "api", "url": "eastmoney://银河航天", "tier": "T2", "domain": "aerospace", "note": "卫星制造/星座" },
+    { "name": "东财搜索·长光卫星", "type": "api", "url": "eastmoney://长光卫星", "tier": "T2", "domain": "aerospace", "note": "吉林一号遥感星座" },
+    { "name": "东财搜索·垣信卫星", "type": "api", "url": "eastmoney://垣信卫星", "tier": "T2", "domain": "aerospace", "note": "千帆星座运营方" },
+    { "name": "东财搜索·微纳星空", "type": "api", "url": "eastmoney://微纳星空", "tier": "T2", "domain": "aerospace", "note": "商业卫星制造" },
+    { "name": "东财搜索·海南商业发射场", "type": "api", "url": "eastmoney://海南商业航天发射场", "tier": "T2", "domain": "aerospace", "note": "文昌商业发射工位" },
+
+    { "name": "东财搜索·SpaceX", "type": "api", "url": "eastmoney://SpaceX", "tier": "T2", "domain": "aerospace", "note": "海外公司·SpaceX（境内可达，中文报道）" },
+    { "name": "东财搜索·星链", "type": "api", "url": "eastmoney://星链", "tier": "T2", "domain": "aerospace", "note": "海外·Starlink 星链" },
+    { "name": "东财搜索·蓝色起源", "type": "api", "url": "eastmoney://蓝色起源", "tier": "T2", "domain": "aerospace", "note": "海外·Blue Origin" },
+    { "name": "东财搜索·马斯克航天", "type": "api", "url": "eastmoney://马斯克 火箭", "tier": "T2", "domain": "aerospace", "note": "海外·马斯克航天动态" },
+    { "name": "东财搜索·亚马逊卫星", "type": "api", "url": "eastmoney://亚马逊 卫星", "tier": "T2", "domain": "aerospace", "note": "海外·Kuiper 星座" },
+    { "name": "东财搜索·Joby", "type": "api", "url": "eastmoney://Joby", "tier": "T2", "domain": "lowaltitude", "note": "海外·Joby Aviation eVTOL" },
+    { "name": "东财搜索·亿航海外", "type": "api", "url": "eastmoney://飞行汽车 海外", "tier": "T2", "domain": "lowaltitude", "note": "海外·飞行汽车海外动态" },
+
+    { "name": "谷歌新闻·商业航天(中)", "type": "rss", "url": "https://news.google.com/rss/search?q=%E5%95%86%E4%B8%9A%E8%88%AA%E5%A4%A9%20OR%20%E5%8F%AF%E5%9B%9E%E6%94%B6%E7%81%AB%E7%AE%AD%20OR%20%E5%8D%AB%E6%98%9F%E4%BA%92%E8%81%94%E7%BD%91&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", "tier": "T2", "domain": "aerospace", "intl": true, "enabled": false, "note": "谷歌新闻中文聚合·商业航天。⚠大陆直连不通(news.google.com 被墙)，需代理/RSSHub 后启用" },
+    { "name": "谷歌新闻·低空经济(中)", "type": "rss", "url": "https://news.google.com/rss/search?q=%E4%BD%8E%E7%A9%BA%E7%BB%8F%E6%B5%8E%20OR%20eVTOL%20OR%20%E9%A3%9E%E8%A1%8C%E6%B1%BD%E8%BD%A6&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", "tier": "T2", "domain": "lowaltitude", "intl": true, "enabled": false, "note": "谷歌新闻中文聚合·低空经济。⚠需代理/RSSHub 后启用" },
+    { "name": "Google News·Commercial Space", "type": "rss", "url": "https://news.google.com/rss/search?q=commercial%20space%20OR%20SpaceX%20OR%20Starlink%20OR%20Rocket%20Lab%20OR%20Blue%20Origin&hl=en-US&gl=US&ceid=US:en", "tier": "T2", "domain": "aerospace", "intl": true, "enabled": false, "note": "谷歌新闻英文·全球商业航天(聚合 SpaceNews/Reuters/NASA)。⚠需代理后启用" },
+    { "name": "Google News·eVTOL & AAM", "type": "rss", "url": "https://news.google.com/rss/search?q=eVTOL%20OR%20%22air%20taxi%22%20OR%20%22advanced%20air%20mobility%22%20OR%20Joby%20OR%20Archer&hl=en-US&gl=US&ceid=US:en", "tier": "T2", "domain": "lowaltitude", "intl": true, "enabled": false, "note": "谷歌新闻英文·全球低空/eVTOL(聚合 eVTOL.com/Vertical Mag)。⚠需代理后启用" },
+    { "name": "Google News·Satellite Internet", "type": "rss", "url": "https://news.google.com/rss/search?q=%22satellite%20internet%22%20OR%20%22satellite%20constellation%22%20OR%20OneWeb%20OR%20Kuiper&hl=en-US&gl=US&ceid=US:en", "tier": "T2", "domain": "aerospace", "intl": true, "enabled": false, "note": "谷歌新闻英文·卫星互联网/星座。⚠需代理后启用" },
+
+    { "name": "36氪", "type": "rss", "url": "https://36kr.com/feed", "tier": "T2", "domain": "both", "note": "科技媒体全量feed，靠预筛过滤出低空/航天相关" },
+    { "name": "IT之家", "type": "rss", "url": "https://www.ithome.com/rss/", "tier": "T2", "domain": "both", "note": "科技媒体全量feed，靠预筛过滤" },
+    { "name": "虎嗅", "type": "rss", "url": "https://www.huxiu.com/rss/0.xml", "tier": "T2", "domain": "both", "note": "科技商业媒体，靠预筛过滤" },
+
+    { "name": "RSSHub·航小宝(示例)", "type": "rss", "url": "rsshub://weixin/wemp/航小宝", "tier": "T1.5", "domain": "aerospace", "enabled": false, "note": "公众号示例：填好『设置』里的 RSSHub 地址后启用。RSSHub 路由按需替换，公众号需经 RSSHub/Wechat2RSS 转 RSS" },
+    { "name": "RSSHub·SpaceNews(外媒)", "type": "rss", "url": "rsshub://spacenews/home", "tier": "T2", "domain": "aerospace", "intl": true, "enabled": false, "note": "外媒 SpaceNews 原生·需填 RSSHub 地址后启用（大陆直连外媒常失败，故走 RSSHub 中转）" },
+    { "name": "RSSHub·eVTOL Insights(外媒)", "type": "rss", "url": "rsshub://evtol/news", "tier": "T2", "domain": "lowaltitude", "intl": true, "enabled": false, "note": "外媒 eVTOL 原生·需填 RSSHub 地址后启用；路由按你的实例支持情况替换" }
+  ]
+}

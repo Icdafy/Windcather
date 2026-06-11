@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ npm install electron@latest --save-dev)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/electron/package.json'\\).version\\)\")",
+      "Bash(ELECTRON_DISABLE_SANDBOX=1 timeout 60 node_modules/.bin/electron /tmp/sqlite-test.js)",
+      "Bash(echo \"=== exit: $? ===\")"
+    ]
+  }
+}

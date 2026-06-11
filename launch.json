@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "windcatcher",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server/index.js"],
+      "port": 7644,
+      "env": { "WINDCATCHER_NO_SCHEDULER": "1" }
+    }
+  ]
+}

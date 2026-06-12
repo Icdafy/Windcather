@@ -42,11 +42,11 @@
   --c-red: #f87171;
   --c-green: #4ade80;
 
-  --glass-bg: linear-gradient(165deg, rgba(148,178,255,.085), rgba(96,118,180,.032) 38%, rgba(70,90,150,.06));
-  --glass-border: rgba(168,190,255,.15);
-  --glass-highlight: linear-gradient(90deg, transparent, rgba(210,225,255,.5), transparent);
-  --glass-blur: blur(24px) saturate(155%);
-  --glass-shadow: 0 18px 50px -18px rgba(0,0,0,.7), 0 4px 14px -8px rgba(0,0,0,.55), inset 0 1px 0 rgba(190,212,255,.06);
+  --glass-bg: linear-gradient(145deg, rgba(190,212,255,.16), rgba(120,150,220,.04) 46%, rgba(96,118,180,.10));
+  --glass-border: rgba(180,200,255,.22);
+  --glass-highlight: linear-gradient(90deg, transparent, rgba(220,235,255,.6), transparent);
+  --glass-blur: blur(26px) saturate(180%) brightness(1.08) contrast(1.04);
+  --glass-shadow: 0 22px 58px -20px rgba(0,0,0,.72), 0 6px 18px -10px rgba(0,0,0,.55), inset 0 1px 0 rgba(200,222,255,.30), inset 0 -18px 32px rgba(0,0,0,.20);
 
   --input-bg: rgba(8,13,30,.6);
   --hover-bg: rgba(168,190,255,.06);
@@ -71,11 +71,11 @@
   --c-red: #dc2626;
   --c-green: #15803d;
 
-  --glass-bg: linear-gradient(168deg, rgba(255,255,255,.88), rgba(255,255,255,.66));
-  --glass-border: rgba(70,84,116,.13);
+  --glass-bg: linear-gradient(145deg, rgba(255,255,255,.55), rgba(255,255,255,.20) 46%, rgba(255,255,255,.40));
+  --glass-border: rgba(255,255,255,.65);
   --glass-highlight: linear-gradient(90deg, transparent, rgba(255,255,255,.95), transparent);
-  --glass-blur: blur(18px) saturate(120%);
-  --glass-shadow: 0 10px 34px -16px rgba(46,58,89,.22), 0 2px 8px -4px rgba(46,58,89,.1);
+  --glass-blur: blur(20px) saturate(170%) brightness(1.06) contrast(1.03);
+  --glass-shadow: 0 14px 40px -16px rgba(46,58,89,.26), 0 3px 10px -5px rgba(46,58,89,.14), inset 0 1px 0 rgba(255,255,255,.75), inset 0 -16px 28px rgba(46,58,89,.06);
 
   --input-bg: rgba(255,255,255,.75);
   --hover-bg: rgba(70,84,116,.05);
@@ -186,16 +186,45 @@ body {
 .glass {
   position: relative;
   background: var(--glass-bg);
+  background-color: var(--glass-fill, transparent);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--glass-shadow);
+  isolation: isolate;
 }
+/* 镜面顶盖：Apple Liquid Glass「捕光」高光，沿顶缘聚拢的径向高光 */
 .glass::before {
-  content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
-  background: var(--glass-highlight);
-  pointer-events: none;
+  content: ''; position: absolute; left: 8%; right: 8%; top: 0; height: 42%;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,.5), transparent 78%);
+  opacity: .7; pointer-events: none; z-index: 0;
+}
+[data-theme="dark"] .glass::before { background: linear-gradient(180deg, rgba(210,228,255,.34), transparent 78%); opacity: .6; }
+.glass > * { position: relative; z-index: 1; }
+
+/* 可达性兜底：不支持 backdrop-filter 时走不透明底，确保可读性不依赖模糊 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass, .btn-icon, .searchbox, .rt-toggle, .card { background-color: rgba(246,244,238,.95); }
+  [data-theme="dark"] .glass,
+  [data-theme="dark"] .btn-icon,
+  [data-theme="dark"] .searchbox,
+  [data-theme="dark"] .rt-toggle,
+  [data-theme="dark"] .card { background-color: rgba(12,18,38,.95); }
+}
+/* 用户要求减少透明：去模糊、转不透明、保留对比 */
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .btn-icon, .searchbox, .rt-toggle, .glass-dialog {
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: rgba(246,244,238,.97);
+  }
+  [data-theme="dark"] .glass,
+  [data-theme="dark"] .btn-icon,
+  [data-theme="dark"] .searchbox,
+  [data-theme="dark"] .rt-toggle,
+  [data-theme="dark"] .glass-dialog { background: rgba(12,18,38,.97); }
+  .glass::before { opacity: .35; }
 }
 
 /* ---------- 塔台状态栏 ---------- */
@@ -250,13 +279,16 @@ body {
 
 .searchbox {
   display: flex; align-items: center; gap: 8px;
-  background: var(--input-bg); border: 1px solid var(--glass-border);
-  border-radius: 99px; padding: 7px 16px; width: 230px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 99px; padding: 8px 16px; width: 230px;
+  backdrop-filter: blur(14px) saturate(160%) brightness(1.04);
+  -webkit-backdrop-filter: blur(14px) saturate(160%) brightness(1.04);
+  box-shadow: 0 4px 12px -6px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.22);
   transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), width var(--dur) var(--ease);
 }
 .searchbox:focus-within {
   border-color: var(--c-teal); width: 285px;
-  box-shadow: 0 0 0 3px rgba(13,148,136,.12);
+  box-shadow: 0 0 0 3px rgba(13,148,136,.16), 0 6px 16px -8px rgba(0,0,0,.4);
 }
 .searchbox svg { width: 15px; height: 15px; color: var(--c-fg-faint); flex-shrink: 0; }
 .searchbox input {
@@ -267,14 +299,18 @@ body {
 
 /* ---------- 按钮 ---------- */
 .btn-icon {
-  display: grid; place-items: center; width: 38px; height: 38px;
+  display: grid; place-items: center; width: 40px; height: 40px;
   border-radius: 50%; border: 1px solid var(--glass-border);
-  background: var(--input-bg); color: var(--c-fg-dim); cursor: pointer;
-  transition: all var(--dur) var(--ease);
+  background: var(--glass-bg); color: var(--c-fg-dim); cursor: pointer;
+  backdrop-filter: blur(14px) saturate(160%) brightness(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(160%) brightness(1.05);
+  box-shadow: 0 4px 12px -6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.25);
+  transition: transform var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), filter var(--dur) var(--ease);
 }
 .btn-icon svg { width: 17px; height: 17px; }
-.btn-icon:hover { color: var(--c-teal); border-color: var(--c-teal); transform: translateY(-1px); }
-.btn-icon:active { transform: scale(.92); }
+.btn-icon:hover { color: var(--c-teal); border-color: var(--c-teal); transform: translateY(-2px); filter: brightness(1.08); }
+.btn-icon:active { transform: translateY(0) scale(.94); box-shadow: inset 0 2px 6px rgba(0,0,0,.25); }
+.btn-icon:focus-visible { outline: 2px solid var(--c-teal); outline-offset: 2px; }
 .btn-icon.spinning svg { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -382,15 +418,20 @@ main { max-width: 1360px; margin: 0 auto; padding: 0 16px 80px; }
 .rt-toggle {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--font-body); font-size: 13px; cursor: pointer;
-  padding: 8px 14px; border-radius: 99px;
-  border: 1px solid var(--glass-border); background: var(--input-bg); color: var(--c-fg-faint);
-  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  padding: 9px 15px; border-radius: 99px;
+  border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--c-fg-faint);
+  backdrop-filter: blur(14px) saturate(160%) brightness(1.04);
+  -webkit-backdrop-filter: blur(14px) saturate(160%) brightness(1.04);
+  box-shadow: 0 4px 12px -6px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.22);
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease), filter var(--dur) var(--ease);
 }
 .rt-toggle .rt-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c-fg-faint); transition: background var(--dur) var(--ease); }
-.rt-toggle:hover { color: var(--c-fg); }
-.rt-toggle.active { color: var(--c-teal); border-color: var(--c-teal); }
+.rt-toggle:hover { color: var(--c-fg); transform: translateY(-2px); filter: brightness(1.07); }
+.rt-toggle:active { transform: translateY(0) scale(.96); }
+.rt-toggle:focus-visible { outline: 2px solid var(--c-teal); outline-offset: 2px; }
+.rt-toggle.active { color: var(--c-teal); border-color: var(--c-teal); background: linear-gradient(135deg, rgba(13,148,136,.16), rgba(13,148,136,.04)); }
 .rt-toggle.active .rt-dot { background: var(--c-green); box-shadow: 0 0 8px var(--c-green); animation: pulse 2.2s ease-in-out infinite; }
-[data-theme="dark"] .rt-toggle.active { color: #aef3e6; border-color: rgba(94,234,212,.4); }
+[data-theme="dark"] .rt-toggle.active { color: #aef3e6; border-color: rgba(94,234,212,.4); background: linear-gradient(135deg, rgba(94,234,212,.2), rgba(94,234,212,.05)); }
 
 /* 自动更新提示胶囊 */
 .update-pill {
